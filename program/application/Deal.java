@@ -76,7 +76,7 @@ public class Deal {
         System.out.println("Round " + currentRound + " is over.");
         System.out.println("******************************");
 
-        if (currentRound <= 9) {
+        if (currentRound < 9) {
             System.out.println("The bank offers you " + bankOffer);
             do {
                 System.out.print("Do you want accept this offer? (y/n): ");
@@ -91,13 +91,28 @@ public class Deal {
                 gameEnded = true;
             }
         } else {
-//            After 9 rounds only 2 suitcases remain in the game (the one the player picked and another one).
-//            The user is offered to switch his case he chose at the beginning of the game with the other one
-//            left in play.
-//
-//            The player wins the content of the suitcase, and the program exits.
-        }
+            System.out.println("Only one box is left!");
+            printAvailableBoxes();
 
+            System.out.println("Values in the game:");
+            System.out.println("[" + eliminatedBoxes.get(firstChosenBox).doubleValue() + "]");
+            System.out.println("[" + boxes.values() + "]");
+
+            do {
+
+                System.out.print("Do you want to switch your box with the one left? (y/n): ");
+                userInput = s.nextLine();
+            } while (!(userInput.equalsIgnoreCase("y") || userInput.equalsIgnoreCase("n")));
+
+            if(userInput.equalsIgnoreCase("n")) {
+                System.out.println("CONGRATULATIONS! You win " + eliminatedBoxes.get(firstChosenBox).doubleValue() + "$");
+            } else {
+                System.out.println("CONGRATULATIONS! You win " + boxes.values() + "$");
+                System.out.println("Your box was worth: " + eliminatedBoxes.get(firstChosenBox).doubleValue() + "$");
+            }
+
+            gameEnded = true;
+        }
 
         currentRound++;
     }
