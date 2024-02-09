@@ -7,6 +7,8 @@ public class Main {
         Deal game = new Deal();
 
         game.startGame();
-        game.playRound();
+        while (!game.isGameEnded()) {
+            game.playRound();
+        }
     }
 }
