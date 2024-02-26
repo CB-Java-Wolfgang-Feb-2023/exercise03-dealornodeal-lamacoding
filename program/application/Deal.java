@@ -9,8 +9,7 @@ public class Deal {
     private int chosenBox, firstChosenBox;
     private Scanner s = new Scanner(System.in);
     private String userInput = "";
-    private final double[] VALUES = {0.01, 1, 5, 10, 25, 50, 75, 100, 200, 300, 400, 500, 750, 1000, 5000, 10000, 25000, 50000, 75000, 100000, 200000, 300000, 400000, 500000, 750000, 1000000};
-
+    private final Double[] VALUES = {0.01, 1., 5., 10., 25., 50., 75., 100., 200., 300., 400., 500., 750., 1000., 5000., 10000., 25000., 50000., 75000., 100000., 200000., 300000., 400000., 500000., 750000., 1000000.};
     private final int[] BOXES_PER_ROUND = {6, 5, 4, 3, 2, 1, 1, 1, 1};
     private int currentRound;
     private boolean gameEnded;
@@ -21,6 +20,8 @@ public class Deal {
         rounds = new HashMap<>();
         currentRound = 1;
         gameEnded = false;
+
+        shuffleArray(VALUES);
 
         for (int i = 0; i < VALUES.length; i++) {
             boxes.put(i + 1, VALUES[i]);
@@ -87,7 +88,7 @@ public class Deal {
             if (userInput.equalsIgnoreCase("y")) {
                 System.out.println("CONGRATULATIONS! You win " + bankOffer + "$");
                 System.out.println("Let's see what was in your box no. " + firstChosenBox);
-                System.out.println(eliminatedBoxes.get(firstChosenBox).doubleValue());
+                System.out.println(eliminatedBoxes.get(firstChosenBox).doubleValue() + "$");
                 gameEnded = true;
             }
         } else {
@@ -95,30 +96,43 @@ public class Deal {
             printAvailableBoxes();
 
             System.out.println("Values in the game:");
-            System.out.println("[" + eliminatedBoxes.get(firstChosenBox).doubleValue() + "]");
-            System.out.println("[" + boxes.values() + "]");
+
+            //Prevent that the user knows which of the 2 values is the value of his box
+            if (new Random().nextBoolean()) {
+                System.out.println("[" + eliminatedBoxes.get(firstChosenBox).doubleValue() + "]");
+                System.out.println(boxes.values());
+            } else {
+                System.out.println(boxes.values());
+                System.out.println("[" + eliminatedBoxes.get(firstChosenBox).doubleValue() + "]");
+            }
 
             do {
-
                 System.out.print("Do you want to switch your box with the one left? (y/n): ");
                 userInput = s.nextLine();
             } while (!(userInput.equalsIgnoreCase("y") || userInput.equalsIgnoreCase("n")));
 
-            if(userInput.equalsIgnoreCase("n")) {
+            if (userInput.equalsIgnoreCase("n")) {
                 System.out.println("CONGRATULATIONS! You win " + eliminatedBoxes.get(firstChosenBox).doubleValue() + "$");
             } else {
                 System.out.println("CONGRATULATIONS! You win " + boxes.values() + "$");
                 System.out.println("Your box was worth: " + eliminatedBoxes.get(firstChosenBox).doubleValue() + "$");
             }
-
             gameEnded = true;
         }
-
         currentRound++;
     }
 
     public boolean isGameEnded() {
         return gameEnded;
+    }
+
+    private <T> void shuffleArray(T[] arrayToShuffle) {
+        List<T> tempList = Arrays.asList(arrayToShuffle);
+        Collections.shuffle(tempList);
+
+        for (int i = 0; i < arrayToShuffle.length; i++) {
+            arrayToShuffle[i] = tempList.get(i);
+        }
     }
 
     private void printAvailableBoxes() {
@@ -132,16 +146,13 @@ public class Deal {
     private void eliminateBox(int key) {
         eliminatedBoxes.put(key, boxes.get(key));
         boxes.remove(key);
-
-        System.out.println(boxes);
-        System.out.println(eliminatedBoxes);
     }
 
     private void printIntro() {
         System.out.println("$$$ WELCOME TO DEAL OR NO DEAL $$$");
     }
 
-    public int calculateBankOffer() {
+    public int calculateBankOffer() { //Integer, because that's enough precision for the bank offer
         int remainingBoxes = boxes.size();
         int remainingBoxesValue = 0;
 
